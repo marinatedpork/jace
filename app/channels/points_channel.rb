@@ -3,6 +3,12 @@ class PointsChannel < ApplicationCable::Channel
     stream_from 'points'
   end
 
+  def delete(data)
+    Point.destroy(data["id"])
+    puts "hello"
+    ActionCable.server.broadcast 'points', { action: 'delete', id: data["id"] }
+  end
+
   def receive(data)
   	@point = Point.new(
       value: data["value"],
@@ -11,7 +17,6 @@ class PointsChannel < ApplicationCable::Channel
       giver_id: 2,
       receiver_id: data["receiver"]
     )
-
     if @point.save
   	  ActionCable.server.broadcast 'points', { point: @point.to_json }
   	end
