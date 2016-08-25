@@ -1,0 +1,8 @@
+db/seeds.rb
+/.bundle
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+.byebug_history
+
