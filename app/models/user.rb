@@ -1,4 +1,9 @@
 class User < ApplicationRecord
+  # Include default devise modules.
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable,
+         :omniauthable
+  include DeviseTokenAuth::Concerns::User
   has_many :given_points, :foreign_key => "giver_id", :class_name => "Point"
   has_many :received_points, :foreign_key => "receiver_id", :class_name => "Point"
 

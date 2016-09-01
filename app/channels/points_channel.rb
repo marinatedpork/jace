@@ -1,24 +1,25 @@
-class PointsChannel < ApplicationCable::Channel  
+class PointsChannel < ApplicationCable::Channel
   def subscribed
     stream_from 'points'
   end
 
   def delete(data)
-    Point.destroy(data["id"])
-    puts "hello"
-    ActionCable.server.broadcast 'points', { action: 'delete', id: data["id"] }
+    id = data["id"]
+    Point.destroy(id)
+    ActionCable.server.broadcast 'points', { action: 'delete', id: id }
   end
 
   def receive(data)
-  	@point = Point.new(
-      value: data["value"],
-      point_type: Point.point_types[data["type"]],
-      reason: data["reason"],
+    val, typ, res, rec = data.values_at("value", "type", "reason", "receiver")
+  	point = Point.new(
+      value: val,
+      point_type: Point.point_types[typ],
+      reason: res,
       giver_id: 2,
-      receiver_id: data["receiver"]
+      receiver_id: rec
     )
-    if @point.save
-  	  ActionCable.server.broadcast 'points', { point: @point.to_json }
+    if point.save
+  	  ActionCable.server.broadcast 'points', { point: point.to_json }
   	end
   end
 end
