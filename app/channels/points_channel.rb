@@ -15,7 +15,7 @@ class PointsChannel < ApplicationCable::Channel
   def receive(data)
     attrs = ['value', 'type', 'reason', 'receiver', 'giver']
     val, typ, res, rec, giv = data.values_at(*attrs)
-  	point = Point.new(
+    point = Point.new(
       value: val,
       point_type: Point.point_types[typ],
       reason: res,
@@ -23,7 +23,7 @@ class PointsChannel < ApplicationCable::Channel
       receiver_id: rec
     )
     if point.save
-  	  ActionCable.server.broadcast 'points', { point: point.to_json }
-  	end
+      ActionCable.server.broadcast 'points', { point: point.to_json }
+    end
   end
 end
